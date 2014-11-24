@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>6AE4E65F-0B79-4BB4-A340-B6EE3F5098DC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>detactiveFace</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B5E94FD3C2A64D7BEE0355D47D103D70A815D092</key>
+		<string>https://github.com/flyingCircusEggSpam/detectiveFace-C.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>detactiveFace.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B5E94FD3C2A64D7BEE0355D47D103D70A815D092</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/flyingCircusEggSpam/detectiveFace-C.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B5E94FD3C2A64D7BEE0355D47D103D70A815D092</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B5E94FD3C2A64D7BEE0355D47D103D70A815D092</string>
+			<key>IDESourceControlWCCName</key>
+			<string>C++</string>
+		</dict>
+	</array>
+</dict>
+</plist>
