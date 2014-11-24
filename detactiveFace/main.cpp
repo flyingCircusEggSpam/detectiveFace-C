@@ -21,15 +21,15 @@
 #include <opencv2/objdetect/objdetect.hpp>
 
 namespace fs = boost::filesystem;
-std::string dirctoryPath = "/Users/KSato/Documents/imageProcessing/";
-std::string dirctoryStrPath = "/Users/KSato/Documents/imageProcessing/detactiveFace/";
 std::string testDetectiveFace = "detectiveFace";
+bool _MARK_UP_FACE_ = true;
 boost::system::error_code error;
 void mkdirFolder(std::string);
 void getFileNameInDirectory(std::string dir, std::vector<std::string>& fileList);
 void displayImage(cv::Mat& img, std::string frameName);
 int detactiveFaceAnalysis(cv::Mat& img, bool marking);
 void moveFile(std::string path1, std::string path2);
+void copyFile(std::string path1, std::string path2);
 
 int main(int argc, const char * argv[]) {
 
@@ -38,27 +38,39 @@ int main(int argc, const char * argv[]) {
     int faceCount = 0;
     
     //選り分けた画像を保管するフォルダ
-    mkdirFolder(dirctoryStrPath + "faceImage");
-    mkdirFolder(dirctoryStrPath + "notFaceImage");
+    mkdirFolder("仕分け");
+    mkdirFolder("仕分け/faceImage");
+    mkdirFolder("仕分け/notFaceImage");
     
-    getFileNameInDirectory(dirctoryStrPath + "srcImage", fileNameList);
+    //イメージフォルダからファイル名を取得
+    getFileNameInDirectory("srcImage", fileNameList);
     
+    //画像イメージを保管
     for(int i = 0; i < fileNameList.size() ;i++)
-        imgList.push_back(cv::imread(dirctoryStrPath + "srcImage/" + fileNameList.at(i), 1));
+        imgList.push_back(cv::imread("srcImage/" + fileNameList.at(i), 1));
   
     //顔認識
     for(int i = 0; i < imgList.size() ;i++){
-        faceCount = detactiveFaceAnalysis(imgList.at(i), true);
-        if(faceCount > 0){
-            moveFile(dirctoryStrPath + "srcImage/" + fileNameList.at(i),
-                     dirctoryStrPath + "faceImage/" + fileNameList.at(i));
+        faceCount = detactiveFaceAnalysis(imgList.at(i), _MARK_UP_FACE_);
+        if(_MARK_UP_FACE_){
+            if(faceCount > 0){
+                cv::imwrite("仕分け/faceImage/" + fileNameList.at(i), imgList.at(i));
+            }else{
+                cv::imwrite("仕分け/notFaceImage/" + fileNameList.at(i), imgList.at(i));
+            }
         }else{
-            moveFile(dirctoryStrPath + "srcImage/" + fileNameList.at(i),
-                     dirctoryStrPath + "notFaceImage/" + fileNameList.at(i));
+            if(faceCount > 0){
+                copyFile("srcImage/" + fileNameList.at(i),
+                         "仕分け/faceImage/" + fileNameList.at(i));
+            }else{
+                copyFile("srcImage/" + fileNameList.at(i),
+                         "仕分け/notFaceImage/" + fileNameList.at(i));
+            }
         }
     }
     
     std::cout << "仕分け終了" << std::endl;
+    displayImage(imgList.at(0), testDetectiveFace);
     cv::waitKey(0);
     
     return 0;
@@ -79,7 +91,7 @@ int detactiveFaceAnalysis(cv::Mat& img, bool marking){
     cv::equalizeHist( smallImg, smallImg);
     
     // 分類器の読み込み
-    std::string cascadeName = "/usr/local/Cellar/opencv/2.4.9/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml"; // Haar-like
+    std::string cascadeName = "cascade/haarcascade_frontalface_alt.xml"; // Haar-like
     cv::CascadeClassifier cascade;
     if(!cascade.load(cascadeName))
         return -1;
@@ -92,8 +104,9 @@ int detactiveFaceAnalysis(cv::Mat& img, bool marking){
                              CV_HAAR_SCALE_IMAGE,
                              cv::Size(30, 30));
     
+    
     // 結果の描画
-    if(marking){
+//    if(marking){
         std::vector<cv::Rect>::const_iterator r = faces.begin();
         for(; r != faces.end(); ++r) {
             cv::Point center;
@@ -103,7 +116,7 @@ int detactiveFaceAnalysis(cv::Mat& img, bool marking){
             radius = cv::saturate_cast<int>((r->width + r->height)*0.25*scale);
             cv::circle(img, center, radius, cv::Scalar(0,0,255), 3, 8, 0 );
         }
-    }
+//    }
     return (int)faces.size();
 }
 
@@ -154,6 +167,23 @@ void moveFile(std::string path1, std::string path2){
     
     try {
         fs::rename(path, dest);
+    }
+    catch (fs::filesystem_error& ex) {
+        std::cout << ex.what() << std::endl;
+        throw;
+    }
+}
+
+/*
+ *  ファイルをコピー
+ *
+ */
+void copyFile(std::string path1, std::string path2){
+    const fs::path path(path1);
+    const fs::path dest(path2);
+    
+    try {
+        fs::copy_file(path, dest);
     }
     catch (fs::filesystem_error& ex) {
         std::cout << ex.what() << std::endl;
